@@ -2,24 +2,34 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
+const images = [
+  "./assets/1.jpg",
+  "./assets/2.jpg",
+  "./assets/3.jpg",
+  "./assets/4.jpg",
+  "./assets/5.jpg",
+  "./assets/6.jpg",
+];
+
+function getFileName(path: string) {
+  return path.replace(/^.*[\\\/]/, "").split(".")[0];
+}
+
 export default function Home() {
   const [width, setWidth] = useState(0);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
-  const images = [
-    "./assets/1.jpg",
-    "./assets/2.jpg",
-    "./assets/3.jpg",
-    "./assets/4.jpg",
-    "./assets/5.jpg",
-    "./assets/6.jpg",
-  ];
-
   useEffect(() => {
-    if (carouselRef.current) {
+    function updateStateOnResize() {
+      if (!carouselRef.current) return;
       const { scrollWidth, offsetWidth } = carouselRef.current;
-      setWidth(scrollWidth - offsetWidth);
+      setWidth(() => scrollWidth - offsetWidth);
     }
+
+    updateStateOnResize();
+
+    window.addEventListener("resize", updateStateOnResize);
+    return () => window.removeEventListener("resize", updateStateOnResize);
   }, []);
 
   return (
@@ -31,26 +41,31 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex items-center justify-center">
+      <main className="flex items-center justify-center min-h-screen bg-slate-100 dark:bg-slate-600">
         <motion.div
           ref={carouselRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
           whileTap={{ cursor: "grabbing" }}
-          className="w-4/5 max-w-5xl cursor-grab overflow-hidden"
+          className="w-4/5 max-w-5xl cursor-grab overflow-hidden mobile:w-11/12"
         >
+          {/* "key" prop will re-render the element when update the state "width", preventing dragConstraints bug */}
           <motion.div
+            key={width}
             drag="x"
             dragConstraints={{ right: 0, left: -width }}
-            className="flex"
+            className="flex space-x-16 laptop:space-x-12 mobile:space-x-6"
           >
             {images.map((imageSrc, index) => (
               <motion.div
                 key={index}
-                className="item min-h-[40rem] min-w-[30rem] p-10"
+                className="min-h-[35rem] min-w-[25rem] laptop:min-h-[30rem] laptop:min-w-[20rem] mobile:min-h-[25rem] mobile:min-w-[15rem]"
               >
                 <picture>
                   <img
                     src={imageSrc}
-                    alt="Cat"
+                    alt={`Cat ${getFileName(imageSrc)}`}
                     className="w-full h-full object-cover rounded-3xl pointer-events-none"
                   />
                 </picture>
