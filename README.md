@@ -12,5 +12,5 @@ Slider utilizando Next.js, Framer Motion e Tailwind CSS, com a implementação d
 
 <div align="center">
   <img alt="Framer Motion Slider" src="https://i.imgur.com/cohur2r.png" width="450px">
-  <p>Confira o resultado: <a href="/" target="_blank">...</a></p>
+  <p>Confira o resultado: <a href="https://slider-framer-motion.vercel.app/" target="_blank">Framer Motion Slider</a></p>
 </div>
